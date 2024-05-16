@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 
-//injecttion of runtime compilation
+//injection of runtime compilation
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 
@@ -26,9 +26,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(
     {
         options.Password.RequiredUniqueChars = 0;
         options.Password.RequireUppercase = false;
-        options.Password.RequiredLength = 7;
+        options.Password.RequiredLength = 5;
         options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireLowercase = false;
     })
     .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
