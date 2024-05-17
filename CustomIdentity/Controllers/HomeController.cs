@@ -5,6 +5,7 @@ using System.Diagnostics;
 
 namespace CustomIdentity.Controllers
 {
+
     [Authorize]
     public class HomeController : Controller
     {

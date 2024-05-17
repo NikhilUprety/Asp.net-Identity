@@ -1,4 +1,5 @@
-﻿using CustomIdentity.Models;
+﻿using CustomIdentity.Data;
+using CustomIdentity.Models;
 using CustomIdentity.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +10,14 @@ namespace CustomIdentity.Controllers
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly AppDbContext _context;
 
-        public ProfileController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager)
+        public ProfileController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager,AppDbContext context)
         {
 
             this._userManager = userManager;
             this._signInManager = signInManager;
+            this._context = context;
         }
 
         [HttpGet]
@@ -47,17 +50,40 @@ namespace CustomIdentity.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(RegisterVM model)
+        public async Task<IActionResult> Register(RegisterVM model)
         {
+  
             if (ModelState.IsValid)
             {
+                AppUser user = new()
+                {
+                    Name = model.Name,
+                    UserName = model.Email,
+                    Email = model.Email,
+                    Address = model.Address
+                };
 
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, false);
+
+                    return RedirectToAction("Index","Home");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
             }
+            return View(model);
         }
-        
-        public IActionResult Logout()
+
+
+        public async Task<IActionResult> Logout()
         {
-            return View();
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login","Profile");
         }
 
 

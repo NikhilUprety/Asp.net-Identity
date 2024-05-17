@@ -28,6 +28,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 5;
         options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireLowercase = false;
     })
     .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
@@ -50,6 +51,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Profile}/{action=Login}/{id?}");
 
 app.Run();
